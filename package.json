@@ -9,8 +9,7 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "@fluentui/example-data": "^8.2.6",
-    "@fluentui/react": "^8.1.2",
+    "@microsoft/rush-stack-compiler-3.7": "^0.6.47",
     "@microsoft/sp-core-library": "1.12.1",
     "@microsoft/sp-lodash-subset": "1.12.1",
     "@microsoft/sp-office-ui-fabric-core": "1.12.1",
@@ -19,15 +18,16 @@
     "@pnp/sp": "^2.8.0",
     "@pnp/spfx-controls-react": "3.3.0",
     "@pnp/spfx-property-controls": "3.2.0",
+    "@uifabric/example-data": "^7.1.6",
     "bootstrap-sass": "^3.4.1",
     "moment": "^2.29.1",
+    "office-ui-fabric-react": "^7.176.1",
     "react": "16.9.0",
     "react-dom": "16.9.0",
     "sp-pnp-js": "^3.0.10",
     "typescript": "^3.7.7"
   },
   "devDependencies": {
-    "@microsoft/rush-stack-compiler-3.7": "^0.6.47",
     "@microsoft/sp-build-web": "1.12.1",
     "@microsoft/sp-module-interfaces": "1.12.1",
     "@microsoft/sp-tslint-rules": "1.12.1",

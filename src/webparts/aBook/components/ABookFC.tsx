@@ -16,6 +16,8 @@ import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { filter } from 'lodash';
 
+import { GroupedListBasicExample } from './GroupedListFC';
+
 // import { Icon, initializeIcons } from "office-ui-fabric-react";
 // import { Selection, SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 // import { GroupedList, IGroup, IGroupRenderProps, IGroupHeaderProps, GroupHeader } from 'office-ui-fabric-react/lib/GroupedList';
@@ -220,6 +222,7 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
           </div>
 
           <div className={ styles.column }> 
+              <GroupedListBasicExample />
               <h1>
                 List of employees: 
               </h1>
