@@ -1,7 +1,7 @@
 {
   "extends": "./node_modules/@microsoft/rush-stack-compiler-3.7/includes/tsconfig-web.json",
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2017",
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -25,7 +25,8 @@
       "es7",
       "dom",
       "es2015.collection",
-      "es2015.promise"
+      "es2015.promise",
+      "es2017.object"
     ]
   },
   "include": [
