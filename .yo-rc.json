@@ -1,0 +1,13 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "version": "1.12.1",
+    "libraryName": "a-book",
+    "libraryId": "089a8b6c-09ff-4622-8286-c0fb07822f41",
+    "environment": "spo",
+    "packageManager": "npm",
+    "framework": "react",
+    "isCreatingSolution": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
