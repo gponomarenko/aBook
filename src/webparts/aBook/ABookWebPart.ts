@@ -16,19 +16,52 @@ import ABookFC from './components/ABookFC';
 
 export interface IABookWebPartProps {
   Title: string;
-  addressEmployee: string;
-  birthdayEmployee: string;
-  fullName: string;
-  jobTitle: string;
+  addressEmployee?: string;
+  birthdayEmployee?:  string;
+  employeeCard?: {
+    Department:  string;
+    EMail: string;
+    Id: number;
+    JobTitle: string;
+    MobilePhone: string;
+    Office: string;
+    Title: string;
+    WorkPhone: string;
+  };
+        
+  employeeCardId?: number;
+  employeeCardStringId?: string;
+  fullName?: string;
+  jobTitle?: string;
   levelEmployee: string;
-  managerOfEmployee: string;
+  managerCard?: {
+    EMail: string;
+    Id: number;
+    Title: string;
+  };          
+  managerCardId?: number;
+  managerCardStringId?: string;
+  managerOfEmployee?: string;
   statusEmployee: string;
 }
 
 export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartProps> {
 
+  public onInit(): Promise<void> {
+    return super.onInit().then(_ => {  
+      sp.setup({
+        spfxContext: this.context,
+        sp: {
+          headers: {
+            Accept: "application/json; odata=nometadata"
+          }
+        }
+      });
+    });
+  }
+
   public render(): void {
-    const element: React.ReactElement<IABookProps> = React.createElement(
+    const element: React.ReactElement<IABookWebPartProps> = React.createElement(
       ABookFC,
       {
         Title: this.properties.Title,
@@ -43,19 +76,6 @@ export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartPro
     );
 
     ReactDom.render(element, this.domElement);
-  }
-
-  public onInit(): Promise<void> {
-    return super.onInit().then(_ => {  
-      sp.setup({
-        spfxContext: this.context,
-        sp: {
-          headers: {
-            Accept: "application/json; odata=nometadata"
-          }
-        }
-      });
-    });
   }
 
   protected onDispose(): void {

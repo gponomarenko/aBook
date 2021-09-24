@@ -6,7 +6,6 @@ import { sp } from "@pnp/sp/presets/all";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import { SPHttpClient } from '@microsoft/sp-http';
-import 'moment';
 
 import { ISPListEmployeesItems } from './IEmployees'; 
 import * as strings from 'ABookWebPartStrings';
@@ -16,17 +15,55 @@ import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { filter } from 'lodash';
 
-import { GroupedListBasicExample } from './GroupedListFC';
+import { GroupedList, IGroup, IGroupHeaderProps } from 'office-ui-fabric-react/lib/GroupedList';
+import { Toggle, IToggleStyles } from 'office-ui-fabric-react/lib/Toggle';
+import { Icon, initializeIcons } from "office-ui-fabric-react";
 
+
+import { GroupedListBasicExample } from './GroupedListFC';
 // import { Icon, initializeIcons } from "office-ui-fabric-react";
 // import { Selection, SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 // import { GroupedList, IGroup, IGroupRenderProps, IGroupHeaderProps, GroupHeader } from 'office-ui-fabric-react/lib/GroupedList';
 
 const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: { width: 300 } };
+const persons = [
+  {
+    "name": "Den",
+    "employee": {
+      "department": "IT"
+    }
+  },
+  {
+    "name": "Greg",
+    "employee": {
+      "department": "IT"
+    }
+  },
+  {
+    "name": "Bob",
+    "employee": {
+      "department": "Administration"
+    }
+  }
+];
+const onRenderHeader = (props?: IGroupHeaderProps): JSX.Element | null => {
+  if (props) {
+    const toggleCollapse = (): void => {
+      props.onToggleCollapse!(props.group!);
+    };
+    return (
+      <div className={styles.groupHeader}>
+        <span style={{ cursor: "pointer", fontSize: "18px", color: "grey", margin: "0 5px 0 0" }} onClick={toggleCollapse} >{props.group.name}</span>
+        <Icon style={{ fontSize: "14px", cursor: "pointer", color: "grey" }} iconName={props.group!.isCollapsed ? 'CaretLeftSolid8' : "FlickUp"} onClick={toggleCollapse}></Icon>
+      </div>
+    );
+  }
+  return null;
+};
 
-interface ArrayConstructor {
-  from(arrayLike: any, mapFn?, thisArg?): Array<any>;
-}
+const groupedListProps = {
+  onRenderHeader
+};
 
 const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
   const [employees, setEmployees] = React.useState<any[]>([]);
@@ -36,44 +73,15 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
   const [statusQuery, setstatusQuery] = React.useState(['active', 'maternityLeave']);
   const [isHROrAdmin, setIsHROrAdmin] = React.useState(false);
 
-  const _getListOfContacts = () => {
-//     Attachments: false
-// AuthorId: 20
-// ComplianceAssetId: null
-// ContentTypeId: "0x0100041ED6490ACF3449B33EC0C7642279FF00CC06B6C503411948820F6A2578D31F78"
-// Created: "2021-09-22T05:44:20Z"
-// EditorId: 20
-// FileSystemObjectType: 0
-// GUID: "858ef9cd-5c23-4ee9-8f31-d253fcabb3f6"
-// ID: 27
-// Id: 27
-// Modified: "2021-09-22T06:03:54Z"
-// OData__UIVersionString: "8.0"
-// ServerRedirectedEmbedUri: null
-// ServerRedirectedEmbedUrl: ""
-// Title: "Артем Левенец"
-// addressEmployee: null
-// birthdayEmployee: "02/04/2000 00:00:00"
-// employeeCardId: 14
-// employeeCardStringId: "14"
-// fullName: "Артем Левенец"
-// jobTitle: "Менеджер проектов"
-// levelEmployee: null
-// managerCardId: 14
-// managerCardStringId: "14"
-// managerOfEmployee: null
-// statusEmployee: "active"
+  const toggleStyles: Partial<IToggleStyles> = { root: { marginBottom: '20px' } };
+  interface IPersons {
+    name: string;
+    employee: {
+      department: string;
+    };  
+  }
 
-// - ПІБ (англ.)
-// - Mail
-// - Робочий телефон
-// - Мобільний телефон
-// - Підрозділ (англ.)
-// - Посада (англ.)
-// - Керівник
-// - Місто (англ.)
-// - Visa
-
+  const _getListOfContacts = () => {    
     sp.web.lists
       .getByTitle('Employees')
       .items
@@ -110,28 +118,40 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
         if (strGroups.includes(userGroups["Title"])) {
           setIsHROrAdmin(true);
         }
-        console.log('groups with Title', userGroups["Title"]);
-        console.log('strGroups', strGroups);                
+        // console.log('groups with Title', userGroups["Title"]);
+        // console.log('strGroups', strGroups);                
       });
     });
   };
 
+
+  React.useEffect(() => {
+    console.log("useEffect is running - loading employees");
+    _checkIfUserInGroups('Servier Ukraine Administrators', 'Servier Ukraine HR');    
+    _getListOfContacts(); 
+  }, []);
+
   const filteredByStatus = employees
     .filter((employee) => statusQuery.find(status => status === employee.statusEmployee));
 
-  const filterPersons = persons => persons
-  .filter((person) => {
-    
-    const conditionOfFiltering = (person.fullName
-    && person.fullName.toLowerCase().includes(fullNameQuery.toLowerCase()))
-    && (person.jobTitle
-    && person.jobTitle.toLowerCase().includes(jobTitleQuery.toLowerCase()))
-    && (!person.managerCard || 
-    person.managerCard 
-      && person.managerCard.Title.toLowerCase().includes(managerOfEmployeeQuery.toLowerCase()));
-    return conditionOfFiltering;
-  })
-  ;
+  const filterPersons = React.useCallback(
+    (persons: any[]): any[] => {
+      return (
+        persons.filter((person) => {    
+          const conditionOfFiltering = (person.fullName
+          && person.fullName.toLowerCase().includes(fullNameQuery.toLowerCase()))
+          && (person.jobTitle
+          && person.jobTitle.toLowerCase().includes(jobTitleQuery.toLowerCase()))
+          && (!person.managerCard || 
+          person.managerCard 
+            && person.managerCard.Title.toLowerCase().includes(managerOfEmployeeQuery.toLowerCase()));
+          return conditionOfFiltering;
+      }));
+    },
+    [],
+    ); 
+
+
 
   const onChangeValue = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, newValue?: string) => {
@@ -143,7 +163,8 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
       } 
       if ((event.target as HTMLInputElement).name === "managerOfEmployee") {
         setManagerOfEmployeeQuery(newValue || '');
-      }        
+      }
+      console.log('onChange declaring');              
     },
     [],
   ); 
@@ -159,23 +180,98 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
       setstatusQuery(value);
     }, []);    
 
-  React.useEffect(() => {
-    console.log("useEffect is running - loading employees");
-    _checkIfUserInGroups('Servier Ukraine Administrators', 'Servier Ukraine HR');    
-    _getListOfContacts(); 
-  }, []);
+
+  
+  const GroupedListTest: React.FunctionComponent = () => {
+    const generateGroups = (sortedPersons: any[]) => {
+      const groupedPersons: any = groupBy(sortedPersons, (i: any) => i.employee && i.employee.department && i.employee.department);
+      console.log('groupedPersons NEW!!!', groupedPersons);
+      let groups: IGroup[] = [];
+      for (const person in groupedPersons) {
+        groups.push({
+          name: person,
+          key: person,
+          startIndex: findIndex(sortedPersons, (i: any) => i.employee.department == person),
+          count: groupedPersons[person].length,
+          isCollapsed: sortedPersons.find((i: any) => i.employee.department == person), // 
+          // sortedPersons.find((i: any) => i.employee.department == person)
+          // findIndex(sortedPersons, (i: any) => i[filterBy] == person) == 0 ? false : true 
+        });
+      }
+      console.log('groups', groups);
+      
+      return groups;
+    };
+
+    const onRenderCell = (nestingDepth?: number, item?: IPersons, itemIndex?: number): JSX.Element => {
+      return  (
+        <div className={styles.card_container}>
+          <div className={styles.container_contacts}>
+            <h2>{item.name}</h2>
+            {item.employee.department}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div>
+          <GroupedList
+            items={persons}
+            // eslint-disable-next-line react/jsx-no-bind
+            groupProps={groupedListProps}
+            onRenderCell={onRenderCell}
+            groups={generateGroups(persons)}
+          />
+      </div>
+    );
+  };
+
  
-  console.log(`fullNameQuery: ${fullNameQuery}`, `jobTitleQuery: ${jobTitleQuery}`, `managerOfEmployeeQuery: ${managerOfEmployeeQuery}`);
-  console.log("employees", employees);  
-  console.log('isHROrAdmin', isHROrAdmin);  
+  // console.log(`fullNameQuery: ${fullNameQuery}`, `jobTitleQuery: ${jobTitleQuery}`, `managerOfEmployeeQuery: ${managerOfEmployeeQuery}`);
+
+  // console.log('isHROrAdmin', isHROrAdmin);  
   console.log('rendering');
 
     
   return (
     <div className={ styles.aBook }>
-      <div className={ styles.container }>
-        <div className={ styles.row }>
-          <div className={ styles.column }>
+      <div className={ styles.main_container }>
+        <div style={{"width": '100%'}}>
+             <GroupedListTest
+             />
+              <h1>
+                List of employees: 
+              </h1>
+              {filterPersons(filteredByStatus).map((item:ISPListEmployeesItems) => {
+                  return (
+                    <ul>
+                      <li>
+                        <p>
+                          {`Name: ${item.fullName}, Job Title ${item.jobTitle}`}  
+                        </p>
+                        <p>
+                          {`Dep: ${item.employeeCard.Department}, Location ${item.employeeCard.Office}`}  
+                        </p>
+                        <p>
+                          {`EMail: ${item.employeeCard.EMail}`}  
+                        </p>
+                        <p>
+                          {item.managerCard && `Manager: ${item.managerCard.Title}`}  
+                        </p>
+                        <p>
+                          {`Title: ${item.Title}, Address ${item.addressEmployee}`}  
+                        </p>
+                        <p>
+                          {`Birthday: ${item.birthdayEmployee}, Level ${item.levelEmployee}`}  
+                        </p>
+                      </li>
+                    </ul>
+                  );
+                })
+              }
+          
+          <div className={ styles.form }>
             <h1>Search fields</h1>
             <Stack>
               <select
@@ -221,44 +317,10 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
             </Stack> 
           </div>
 
-          <div className={ styles.column }> 
-              <GroupedListBasicExample />
-              <h1>
-                List of employees: 
-              </h1>
-              {filterPersons(filteredByStatus).map((item:ISPListEmployeesItems) => {
-                  return (
-                    <ul>
-                      <li>
-                        <p>
-                          {`Name: ${item.fullName}, Job Title ${item.jobTitle}`}  
-                        </p>
-                        <p>
-                          {`Dep: ${item.employeeCard.Department}, Location ${item.employeeCard.Office}`}  
-                        </p>
-                        <p>
-                          {`EMail: ${item.employeeCard.EMail}`}  
-                        </p>
-                        <p>
-                          {item.managerCard && `Manager: ${item.managerCard.Title}`}  
-                        </p>
-                        <p>
-                          {`Title: ${item.Title}, Address ${item.addressEmployee}`}  
-                        </p>
-                        <p>
-                          {`Birthday: ${item.birthdayEmployee}, Level ${item.levelEmployee}`}  
-                        </p>
-                      </li>
-                    </ul>
-                  );
-                })
-              }
-          </div>
-
         </div>
       </div>
     </div>
   );
 };
-
+ 
 export default React.memo(ABookFC);

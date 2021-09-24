@@ -1,135 +1,131 @@
 import * as React from 'react';
-import { GroupedList, IGroup } from 'office-ui-fabric-react/lib/GroupedList';
+import { GroupedList, IGroup, IGroupHeaderProps } from 'office-ui-fabric-react/lib/GroupedList';
 import { IColumn, DetailsRow } from 'office-ui-fabric-react/lib/DetailsList';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
 import { Toggle, IToggleStyles } from 'office-ui-fabric-react/lib/Toggle';
 import { useBoolean, useConst } from '@uifabric/react-hooks';
 import { createListItems, createGroups, IExampleItem } from '@uifabric/example-data';
 import { escape, groupBy, findIndex } from '@microsoft/sp-lodash-subset';
+import styles from './ABook.module.scss';
+import { JsxElement } from 'typescript';
+import { Icon, initializeIcons } from "office-ui-fabric-react";
 
 const toggleStyles: Partial<IToggleStyles> = { root: { marginBottom: '20px' } };
-const groupCount = 3;
-const groupDepth = 3;
+
 const persons = [
     {
       "name": "Den",
-      "department": "IT"
+      "employee": {
+        "department": "IT"
+      }
     },
     {
       "name": "Greg",
-      "department": "IT"
+      "employee": {
+        "department": "IT"
+      }
     },
     {
       "name": "Bob",
-      "department": "Administration"
-    },
-     {
-      "name": "Fil",
-      "department": "Administration"
-    },
-    {
-      "name": "Joe",
-      "department": "Marketing"
-    },
-    {
-      "name": "Emma",
-      "department": "Marketing"
+      "employee": {
+        "department": "Administration"
+      }
     }
-  ]
+];
 
-const items = createListItems(Math.pow(groupCount, groupDepth + 1));
-const columns = Object.keys(items[0])
-  .slice(0, 3)
-  .map(
-    (key: string): IColumn => ({
-      key: key,
-      name: key,
-      fieldName: key,
-      minWidth: 300,
-    }),
-  );
 
-const groups = createGroups(groupCount, groupDepth, 0, groupCount);
+const onRenderHeader = (props?: IGroupHeaderProps): JSX.Element | null => {
+  if (props) {
+    const toggleCollapse = (): void => {
+      props.onToggleCollapse!(props.group!);
+    };
+    return (
+      <div className={styles.groupHeader}>
+        <span style={{ cursor: "pointer", fontSize: "18px", color: "grey", margin: "0 5px 0 0" }} onClick={toggleCollapse} >{props.group.name}</span>
+        <Icon style={{ fontSize: "14px", cursor: "pointer", color: "grey" }} iconName={props.group!.isCollapsed ? 'CaretLeftSolid8' : "FlickUp"} onClick={toggleCollapse}></Icon>
+      </div>
+    );
+  }
+  return null;
+};
+
+const groupedListProps = {
+  onRenderHeader
+};
+
+  /* 
+  
+    //  {
+    //   "name": "Fil",
+    //   "department": "Administration"
+    // },
+    // {
+    //   "name": "Joe",
+    //   "department": "Marketing"
+    // },
+    // {
+    //   "name": "Emma",
+    //   "department": "Marketing"
+    // },
+    // {
+    //   "name": "Clair",
+    //   "department": "Marketing"
+    // },
+    // {
+    //   "name": "Irish",
+    //   "department": "Marketing"
+    // }
+
+  */
+  
+export interface IPersons {
+  name: string;
+  employee: {
+    department: string;
+  };  
+}
 
 export const GroupedListBasicExample: React.FunctionComponent = () => {
-  const [isCompactMode, { toggle: toggleIsCompactMode }] = useBoolean(false);
-  const selection = useConst(() => {
-    const s = new Selection();
-    s.setItems(items, true);
-    return s;
-  });
-
-//   const groupItems: any[] = () => {
-//     let collection = {};
-//     persons.forEach((elem) => {
-//       const query = elem.department;
-//       if (!Object.keys(collection).includes(query)) {
-//         collection[query] = [{
-//             key: query,
-//             name: query,
-//             startIndex: findIndex(items, (i: any) => i.department === query),
-//             count: 
-//         }];
-//       }
-//       collection[query].push(elem);
-//       console.log(elem);
-//     });
-//     return Object.values(collection);
-//   };
-
   const generateGroups = (sortedPersons: any[]) => {
-    const groupedPersons: any = groupBy(sortedPersons, (i: any) => i.color);
+    const groupedPersons: any = groupBy(sortedPersons, (i: any) => i.employee && i.employee.department && i.employee.department);
     console.log('groupedPersons', groupedPersons);
     let groups: IGroup[] = [];
-    for (const item in groupedPersons) {
+    for (const person in groupedPersons) {
       groups.push({
-        name: item,
-        key: item,
-        startIndex: findIndex(sortedPersons, (i: any) => i.color),
-        count: groupedPersons[item].length,
-        isCollapsed: findIndex(sortedPersons, (i: any) => i.color) == 0 ? false : true 
-      })
+        name: person,
+        key: person,
+        startIndex: findIndex(sortedPersons, (i: any) => i.employee.department == person),
+        count: groupedPersons[person].length,
+        isCollapsed: sortedPersons.find((i: any) => i.employee.department == person), // 
+        // sortedPersons.find((i: any) => i.employee.department == person)
+        // findIndex(sortedPersons, (i: any) => i[filterBy] == person) == 0 ? false : true 
+      });
     }
     console.log('groups', groups);
     
     return groups;
-  }
+  };
 
-  const onRenderCell = (nestingDepth?: number, item?: IExampleItem, itemIndex?: number): React.ReactNode => {
-    return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
-      <DetailsRow
-        columns={columns}
-        groupNestingDepth={nestingDepth}
-        item={item}
-        itemIndex={itemIndex}
-        selection={selection}
-        selectionMode={SelectionMode.multiple}
-        compact={isCompactMode}
-      />
-    ) : null;
+  const onRenderCell = (nestingDepth?: number, item?: IPersons, itemIndex?: number): JSX.Element => {
+    return  (
+      <div className={styles.card_container}>
+        <div className={styles.container_contacts}>
+          <h2>{item.name}</h2>
+          {item.employee.department}
+        </div>
+      </div>
+    );
   };
 
   return (
     <div>
-      <Toggle
-        label="Enable compact mode"
-        checked={isCompactMode}
-        onChange={toggleIsCompactMode}
-        onText="Compact"
-        offText="Normal"
-        styles={toggleStyles}
-      />
-      <SelectionZone selection={selection} selectionMode={SelectionMode.multiple}>
         <GroupedList
-          items={items}
+          items={persons}
           // eslint-disable-next-line react/jsx-no-bind
+          groupProps={groupedListProps}
           onRenderCell={onRenderCell}
-          selection={selection}
-          selectionMode={SelectionMode.multiple}
-          groups={generateGroups(items)}
-          compact={isCompactMode}
+          groups={generateGroups(persons)}
         />
-      </SelectionZone>
     </div>
   );
 };
