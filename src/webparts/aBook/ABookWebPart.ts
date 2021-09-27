@@ -43,7 +43,7 @@ export interface IABookWebPartProps {
   managerCardStringId?: string;
   managerOfEmployee?: string;
   statusEmployee: string;
-}
+  }
 
 export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartProps> {
 
