@@ -12,37 +12,11 @@ import * as strings from 'ABookWebPartStrings';
 import { IABookProps } from './components/IABookProps';
 import "@pnp/sp/webs";
 import { IItemAddResult, sp, Web } from "@pnp/sp/presets/all";
-import ABookFC from './components/ABookFC';
+import { ABookFC } from './components/ABookFC';
+import { IABookHooksWebPartProps } from './components/IABookHookProps'
 
 export interface IABookWebPartProps {
-  Title: string;
-  addressEmployee?: string;
-  birthdayEmployee?:  string;
-  employeeCard?: {
-    Department:  string;
-    EMail: string;
-    Id: number;
-    JobTitle: string;
-    MobilePhone: string;
-    Office: string;
-    Title: string;
-    WorkPhone: string;
-  };
-        
-  employeeCardId?: number;
-  employeeCardStringId?: string;
-  fullName?: string;
-  jobTitle?: string;
-  levelEmployee: string;
-  managerCard?: {
-    EMail: string;
-    Id: number;
-    Title: string;
-  };          
-  managerCardId?: number;
-  managerCardStringId?: string;
-  managerOfEmployee?: string;
-  statusEmployee: string;
+  description: string;
   }
 
 export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartProps> {
@@ -61,17 +35,11 @@ export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartPro
   }
 
   public render(): void {
-    const element: React.ReactElement<IABookWebPartProps> = React.createElement(
+    const element: React.ReactElement<IABookHooksWebPartProps> = React.createElement(
       ABookFC,
       {
-        Title: this.properties.Title,
-        addressEmployee: this.properties.addressEmployee,
-        birthdayEmployee: this.properties.birthdayEmployee,
-        fullName: this.properties.fullName,
-        jobTitle: this.properties.jobTitle,
-        levelEmployee: this.properties.levelEmployee,
-        managerOfEmployee: this.properties.managerOfEmployee,
-        statusEmployee: this.properties.statusEmployee,
+        description: this.properties.description,
+        context: this.context
       }
     );
 

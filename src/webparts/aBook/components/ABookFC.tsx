@@ -24,6 +24,8 @@ import { GroupedListBasicExample } from './GroupedListFC';
 // import { Icon, initializeIcons } from "office-ui-fabric-react";
 // import { Selection, SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 // import { GroupedList, IGroup, IGroupRenderProps, IGroupHeaderProps, GroupHeader } from 'office-ui-fabric-react/lib/GroupedList';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { IABookHooksWebPartProps } from './IABookHookProps'
 
 const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: { width: 300 } };
 const persons = [
@@ -65,7 +67,9 @@ const groupedListProps = {
   onRenderHeader
 };
 
-const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
+export const ABookWebPartContext = React.createContext<WebPartContext>(null);
+
+export const ABookFC: React.FunctionComponent<IABookHooksWebPartProps> = (props) => {
   const [employees, setEmployees] = React.useState<any[]>([]);
   const [fullNameQuery, setFullNameQuery] = React.useState('');
   const [jobTitleQuery, setJobTitleQuery] = React.useState('');
@@ -215,6 +219,7 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
     };
 
     return (
+      <ABookWebPartContext.Provider value={props.context}>
       <div>
           <GroupedList
             items={persons}
@@ -224,6 +229,7 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
             groups={generateGroups(persons)}
           />
       </div>
+      </ABookWebPartContext.Provider>
     );
   };
 
@@ -235,6 +241,8 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
 
     
   return (
+    
+    
     <div className={ styles.aBook }>
       <div className={ styles.main_container }>
         <div style={{"width": '100%'}}>
@@ -320,7 +328,7 @@ const ABookFC: React.FunctionComponent<IABookProps> = (props) => {
         </div>
       </div>
     </div>
+    
   );
 };
  
-export default React.memo(ABookFC);
