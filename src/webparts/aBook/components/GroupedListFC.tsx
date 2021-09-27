@@ -14,7 +14,7 @@ const toggleStyles: Partial<IToggleStyles> = { root: { marginBottom: '20px' } };
 
 const persons = [
     {
-      "name": "Den",
+      "Title": "Den",
       "employee": {
         "department": "IT"
       }

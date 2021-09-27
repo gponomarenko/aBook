@@ -20,7 +20,7 @@ import { Toggle, IToggleStyles } from 'office-ui-fabric-react/lib/Toggle';
 import { Icon, initializeIcons } from "office-ui-fabric-react";
 
 
-import { GroupedListBasicExample } from './GroupedListFC';
+// import { GroupedListBasicExample } from './GroupedListFC';
 // import { Icon, initializeIcons } from "office-ui-fabric-react";
 // import { Selection, SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 // import { GroupedList, IGroup, IGroupRenderProps, IGroupHeaderProps, GroupHeader } from 'office-ui-fabric-react/lib/GroupedList';
@@ -31,23 +31,24 @@ const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: { width: 300 } 
 const persons = [
   {
     "name": "Den",
-    "employee": {
-      "department": "IT"
+    "employeeCard": {
+      "Department": "IT"
     }
   },
   {
     "name": "Greg",
-    "employee": {
-      "department": "IT"
+    "employeeCard": {
+      "Department": "IT"
     }
   },
   {
     "name": "Bob",
-    "employee": {
-      "department": "Administration"
+    "employeeCard": {
+      "Department": "Administration"
     }
   }
 ];
+
 const onRenderHeader = (props?: IGroupHeaderProps): JSX.Element | null => {
   if (props) {
     const toggleCollapse = (): void => {
@@ -80,8 +81,8 @@ export const ABookFC: React.FunctionComponent<IABookHooksWebPartProps> = (props)
   const toggleStyles: Partial<IToggleStyles> = { root: { marginBottom: '20px' } };
   interface IPersons {
     name: string;
-    employee: {
-      department: string;
+    employeeCard: {
+      Department: string;
     };  
   }
 
@@ -188,16 +189,17 @@ export const ABookFC: React.FunctionComponent<IABookHooksWebPartProps> = (props)
   
   const GroupedListTest: React.FunctionComponent = () => {
     const generateGroups = (sortedPersons: any[]) => {
-      const groupedPersons: any = groupBy(sortedPersons, (i: any) => i.employee && i.employee.department && i.employee.department);
+      const groupedPersons: any = groupBy(sortedPersons, (i: any) => 
+        i.employeeCard && i.employeeCard.Department && i.employeeCard.Department);
       console.log('groupedPersons NEW!!!', groupedPersons);
       let groups: IGroup[] = [];
       for (const person in groupedPersons) {
         groups.push({
           name: person,
           key: person,
-          startIndex: findIndex(sortedPersons, (i: any) => i.employee.department == person),
+          startIndex: findIndex(sortedPersons, (i: any) => i.employeeCard.Department == person),
           count: groupedPersons[person].length,
-          isCollapsed: sortedPersons.find((i: any) => i.employee.department == person), // 
+          isCollapsed: sortedPersons.find((i: any) => i.employeeCard.Department == person), // 
           // sortedPersons.find((i: any) => i.employee.department == person)
           // findIndex(sortedPersons, (i: any) => i[filterBy] == person) == 0 ? false : true 
         });
@@ -212,7 +214,7 @@ export const ABookFC: React.FunctionComponent<IABookHooksWebPartProps> = (props)
         <div className={styles.card_container}>
           <div className={styles.container_contacts}>
             <h2>{item.name}</h2>
-            {item.employee.department}
+            {item.employeeCard.Department}
           </div>
         </div>
       );
