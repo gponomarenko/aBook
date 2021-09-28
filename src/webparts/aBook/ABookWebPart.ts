@@ -9,15 +9,10 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'ABookWebPartStrings';
 
-import { IABookProps } from './components/IABookProps';
 import "@pnp/sp/webs";
 import { IItemAddResult, sp, Web } from "@pnp/sp/presets/all";
 import { ABookFC } from './components/ABookFC';
-import { IABookHooksWebPartProps } from './components/IABookHookProps'
-
-export interface IABookWebPartProps {
-  description: string;
-  }
+import { IABookWebPartProps } from './components/IABookWebPartProps'
 
 export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartProps> {
 
@@ -35,7 +30,7 @@ export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartPro
   }
 
   public render(): void {
-    const element: React.ReactElement<IABookHooksWebPartProps> = React.createElement(
+    const element: React.ReactElement<IABookWebPartProps> = React.createElement(
       ABookFC,
       {
         description: this.properties.description,

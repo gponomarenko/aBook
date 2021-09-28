@@ -3,17 +3,6 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { IReadonlyTheme } from "@microsoft/sp-component-base";
 import { IDateTimeFieldValue } from "@pnp/spfx-property-controls/lib/PropertyFieldDateTimePicker";
 
-// export interface IABookProps {
-//   Title: string;
-//   addressEmployee: string;
-//   birthdayEmployee: string;
-//   fullName: string;
-//   jobTitle: string;
-//   levelEmployee: string;
-//   managerOfEmployee: string;
-//   statusEmployee: string;
-// }
-
 export interface IABookProps {
     Title: string;
     addressEmployee?: string;
@@ -33,7 +22,7 @@ export interface IABookProps {
     employeeCardStringId?: string;
     fullName?: string;
     jobTitle?: string;
-    levelEmployee: string;
+    levelEmployee: number;
     managerCard?: {
       EMail: string;
       Id: number;
@@ -43,6 +32,7 @@ export interface IABookProps {
     managerCardStringId?: string;
     managerOfEmployee?: string;
     statusEmployee: string;
+    VISA?: string;
 }
     // ID: 29
     // Id: 29

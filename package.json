@@ -18,11 +18,13 @@
     "@pnp/sp": "^2.8.0",
     "@pnp/spfx-controls-react": "3.3.0",
     "@pnp/spfx-property-controls": "3.2.0",
+    "@types/react-csv": "^1.1.2",
     "@uifabric/example-data": "^7.1.6",
     "bootstrap-sass": "^3.4.1",
     "moment": "^2.29.1",
     "office-ui-fabric-react": "^7.176.1",
     "react": "16.9.0",
+    "react-csv": "^2.0.3",
     "react-dom": "16.9.0",
     "sp-pnp-js": "^3.0.10",
     "typescript": "^3.7.7"

@@ -22,8 +22,11 @@
       "webpack-env"
     ],
     "lib": [
+      "es5",
+      "es6",
       "es7",
       "dom",
+      "dom.iterable",
       "es2015.collection",
       "es2015.promise",
       "es2017.object"

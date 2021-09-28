@@ -1,6 +1,6 @@
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
-export interface IABookHooksWebPartProps {
+export interface IABookWebPartProps {
     description: string;
     context: WebPartContext;
 }
