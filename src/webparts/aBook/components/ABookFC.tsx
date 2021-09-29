@@ -249,17 +249,17 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
               name="selectStatus"
             >
               <option 
-                label="active" 
+                label="Активний" 
                 value="active"
                 selected                
               >active</option>
               <option 
-                label="maternityLeave" 
+                label="Декрет" 
                 value="maternityLeave" 
                 selected
               >maternityLeave</option>
               {isHROrAdmin ? <option 
-                label="fired" 
+                label="Звільнений" 
                 value="fired" 
                 selected={false}
               >fired</option> : ''} 
