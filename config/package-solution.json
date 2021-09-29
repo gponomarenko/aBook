@@ -3,7 +3,7 @@
   "solution": {
     "name": "a-book-client-side-solution",
     "id": "089a8b6c-09ff-4622-8286-c0fb07822f41",
-    "version": "1.0.0.1",
+    "version": "1.0.0.2",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
