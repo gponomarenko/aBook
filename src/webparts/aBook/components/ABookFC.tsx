@@ -249,42 +249,42 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
               name="selectStatus"
             >
               <option 
-                label="Активний" 
+                label="Активний"  
                 value="active"
                 selected                
-              >active</option>
+              >Активний</option>
               <option 
-                label="Декрет" 
+                label="Декретна відпустка" 
                 value="maternityLeave" 
                 selected
-              >maternityLeave</option>
+              >Декретна відпустка</option>
               {isHROrAdmin ? <option 
-                label="Звільнений" 
+                label="Звільнений"
                 value="fired" 
                 selected={false}
-              >fired</option> : ''} 
+              >Звільнений</option> : ''} 
             </select>
             
             <TextField          
-              label="Full Name"
+              label="ПІБ"
               name="fullName" 
               value={fullNameQuery}
               onChange={onChangeValue} 
             />        
             <TextField 
-              label="Job Title"
+              label="Посада"
               name="jobTitle" 
               value={jobTitleQuery}
               onChange={onChangeValue} 
             />    
             <TextField 
-              label="Manager" 
+              label="Керівник" 
               name="managerOfEmployee"
               value={managerOfEmployeeQuery}
               onChange={onChangeValue}
             /> 
             <TextField 
-              label="Department" 
+              label="Відділ" 
               name="Department"
               value={departmentQuery}
               onChange={onChangeValue}
