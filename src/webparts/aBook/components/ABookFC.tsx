@@ -5,15 +5,13 @@ import { groupBy, findIndex } from '@microsoft/sp-lodash-subset';
 import { sp } from "@pnp/sp/presets/all";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
-
-import * as strings from 'ABookWebPartStrings';
-
+// import * as strings from 'ABookWebPartStrings';
 import { TextField, ITextFieldStyles } from 'office-ui-fabric-react/lib/TextField';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
+// import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
-import { filter } from 'lodash';
+// import { filter } from 'lodash';
 import { GroupedList, IGroup, IGroupHeaderProps } from 'office-ui-fabric-react/lib/GroupedList';
-import { Toggle, IToggleStyles } from 'office-ui-fabric-react/lib/Toggle';
+// import { Toggle, IToggleStyles } from 'office-ui-fabric-react/lib/Toggle';
 import { Icon, initializeIcons } from "office-ui-fabric-react";
 
 import { ABookWebPartContext } from '../utils/context';
@@ -178,12 +176,11 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
       if ((event.target as HTMLInputElement).name === "email") {
         setEmail(newValue || '');
       }
-      console.log('onChange declaring'); 
-      console.log('filtered', filtered);
-                   
+      // console.log('onChange declaring'); 
+      // console.log('filtered', filtered);                   
     },
     [],
-  ); 
+  );
 
   const handleChangeStatus = React.useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
