@@ -43,13 +43,16 @@ const groupedListProps = {
 
 export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
   const [employees, setEmployees] = React.useState<any[]>([]);
-  const [fullNameQuery, setFullNameQuery] = React.useState('');
-  const [jobTitleQuery, setJobTitleQuery] = React.useState('');
-  const [departmentQuery, setDepartmentQuery] = React.useState('');
-  const [mobileQuery, setMobileQuery] = React.useState('');
-  const [managerOfEmployeeQuery, setManagerOfEmployeeQuery] = React.useState('');  
-  const [statusQuery, setStatusQuery] = React.useState(['active', 'maternityLeave']);
+  const [fullNameQuery, setFullName] = React.useState('');
+  const [jobTitleQuery, setJobTitle] = React.useState('');
+  const [departmentQuery, setDepartment] = React.useState('');
+  const [managerOfEmployeeQuery, setManagerOfEmployee] = React.useState('');  
+  const [statusQuery, setStatus] = React.useState(['active', 'maternityLeave']);
   const [isHROrAdmin, setIsHROrAdmin] = React.useState(false);
+
+  const [mobileQuery, setMobile] = React.useState('');
+  const [workPhoneQuery, setWorkPhone] = React.useState('');
+  const [emailQuery, setEmail] = React.useState('');
 
   const _getListOfContacts = () => {    
     sp.web.lists
@@ -78,7 +81,7 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
             setEmployees(response);           
           }        
       })
-      .catch((e) => console.log(`getListOfContacts error: ${e.message}`)
+      .catch((e) => console.log(`getListOfContacts error. Name: ${e.name}. Message: ${e.message}`)
       );
   };
 
@@ -102,15 +105,38 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
     .filter((employee) => statusQuery.find(status => status === employee.statusEmployee));
 
   const filtered = JSON.parse(JSON.stringify(filteredByStatus
-    .filter((person) => {    
-      const conditionOfFiltering = (person.fullName
-      && person.fullName.toLowerCase().includes(fullNameQuery.toLowerCase()))
-      && (person.jobTitle
-      && person.jobTitle.toLowerCase().includes(jobTitleQuery.toLowerCase()))
-      && (!person.managerCard || 
-      person.managerCard 
-        && person.managerCard.Title.toLowerCase().includes(managerOfEmployeeQuery.toLowerCase()))
-      && person.employeeCard.Department.toLowerCase().includes(departmentQuery.toLowerCase())
+    .filter((person: IABookProps) => {    
+      const conditionOfFiltering = (
+        (!person.fullName 
+          || person.fullName?.toLowerCase().includes(fullNameQuery.toLowerCase()))
+        && (!person.jobTitle 
+          || person.jobTitle?.toLowerCase().includes(jobTitleQuery.toLowerCase()))
+        
+        && (person.managerCard 
+          ? person.managerCard?.Title.toLowerCase().includes(managerOfEmployeeQuery.toLowerCase())
+          : !managerOfEmployeeQuery.length)
+
+        && (person.managerCard 
+          ? person.managerCard?.Title.toLowerCase().includes(managerOfEmployeeQuery.toLowerCase())
+          : !managerOfEmployeeQuery.length)
+
+        && (person.employeeCard.Department  
+          ? person.employeeCard.Department?.toLowerCase().includes(departmentQuery.toLowerCase())
+          : !departmentQuery.length)
+
+        && (person.employeeCard.MobilePhone  
+          ? person.employeeCard.MobilePhone?.toLowerCase().includes(mobileQuery.toLowerCase())
+          : !mobileQuery.length)
+
+        && (person.employeeCard.WorkPhone  
+          ? person.employeeCard.WorkPhone?.toLowerCase().includes(workPhoneQuery.toLowerCase())
+          : !workPhoneQuery.length)
+        
+        && (person.employeeCard.EMail  
+          ? person.employeeCard.EMail?.toLowerCase().includes(emailQuery.toLowerCase())
+          : !emailQuery.length)
+      );
+
       return conditionOfFiltering;
     })))
     .sort((a,b) => a.employeeCard.Department.localeCompare(b.employeeCard.Department))
@@ -132,18 +158,29 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
   const onChangeValue = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, newValue?: string) => {
       if ((event.target as HTMLInputElement).name === "fullName") {
-        setFullNameQuery(newValue || '');
+        setFullName(newValue || '');
       }
       if ((event.target as HTMLInputElement).name === "jobTitle") {
-        setJobTitleQuery(newValue || '');
+        setJobTitle(newValue || '');
       } 
       if ((event.target as HTMLInputElement).name === "managerOfEmployee") {
-        setManagerOfEmployeeQuery(newValue || '');
+        setManagerOfEmployee(newValue || '');
       }
       if ((event.target as HTMLInputElement).name === "Department") {
-        setDepartmentQuery(newValue || '');
+        setDepartment(newValue || '');
       }
-      console.log('onChange declaring');              
+      if ((event.target as HTMLInputElement).name === "mobile") {
+        setMobile(newValue || '');
+      }
+      if ((event.target as HTMLInputElement).name === "workPhone") {
+        setWorkPhone(newValue || '');
+      }
+      if ((event.target as HTMLInputElement).name === "email") {
+        setEmail(newValue || '');
+      }
+      console.log('onChange declaring'); 
+      console.log('filtered', filtered);
+                   
     },
     [],
   ); 
@@ -155,13 +192,13 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
         option => option.value,
       );
       console.log("value status", value);      
-      setStatusQuery(value);
+      setStatus(value);
     }, []);    
   
   const GroupedListDep: React.FunctionComponent = () => {
     const generateGroups = (sortedPersons: any[]) => {
       const groupedPersons: any = groupBy(sortedPersons, (i: any) => 
-        i.employeeCard && i.employeeCard.Department && i.employeeCard.Department)
+        i.employeeCard && i.employeeCard.Department && i.employeeCard.Department);
       console.log('groupedPersons', groupedPersons);
 
       let groupedAndSorted = {};
@@ -172,7 +209,7 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
                       ? a.levelEmployee - b.levelEmployee 
                       : a.Title - b.Title),
           ...groupedAndSorted,
-        }
+        };
       }
 
       console.log('groupedAndSorted', groupedAndSorted);
@@ -200,10 +237,26 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
             <img className={styles.img} src={'/_layouts/15/userphoto.aspx?size=L&accountname=' + item.employeeCard.EMail} alt="some img" />
           </div>
           <div className={styles.container_contacts}>
-            <h2 className={styles.title}>{item.Title}</h2>
-            <p className={styles.description}>{item.employeeCard.JobTitle}</p>
-            <p className={styles.description}>{'Підрозділ: ' + item.employeeCard.Department}</p>
-            <p className={styles.description}>{'Мобільний ' + item.employeeCard.WorkPhone}</p>
+            <h2 className={styles.title}>
+              {item.Title}
+            </h2>
+            <p className={styles.description}>
+              {item.employeeCard.JobTitle}
+            </p>
+            <p className={styles.description}>
+              {'Підрозділ: ' + item.employeeCard.Department}
+            </p>
+            <p className={styles.description}>
+              {item.employeeCard.MobilePhone 
+                ? `Мобільний: ${item.employeeCard.MobilePhone}` : null}
+            </p>
+            <p className={styles.description}>
+              {item.employeeCard.WorkPhone 
+                ? `Робочий: ${item.employeeCard.WorkPhone}` : null}
+            </p>
+            <p className={styles.description}>
+              {item.managerCard ? 'Керівник ' + item.managerCard.Title : null}
+            </p>
             <br />
             <p className={styles.description}>{'Email: ' + item.employeeCard.EMail}</p>
             {item.managerCard ? <p className={styles.manager}>{item.managerCard.Title}</p> : ""}
@@ -241,6 +294,9 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
           />
         </div>
         <div className={ styles.form }>
+          <h3>
+            Пошук
+          </h3>
           <Stack className={styles.searchForm}>
             <select
               multiple
@@ -288,7 +344,25 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
               name="Department"
               value={departmentQuery}
               onChange={onChangeValue}
-            />       
+            />
+            <TextField 
+              label="Мобільний тел." 
+              name="mobile"
+              value={mobileQuery}
+              onChange={onChangeValue}
+            /> 
+            <TextField 
+              label="Робочий тел." 
+              name="workPhone"
+              value={workPhoneQuery}
+              onChange={onChangeValue}
+            />     
+            <TextField 
+              label="E-mail" 
+              name="email"
+              value={emailQuery}
+              onChange={onChangeValue}
+            />  
           </Stack> 
           <br />
           <div className={ styles.button__container }>
@@ -332,7 +406,7 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
                     managerId,
                     managerTitle,
                     ...item,
-                  }
+                  };
                 })
               } 
             filename={'UserInformationReport.csv'} 

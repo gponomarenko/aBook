@@ -12,7 +12,7 @@ import * as strings from 'ABookWebPartStrings';
 import "@pnp/sp/webs";
 import { IItemAddResult, sp, Web } from "@pnp/sp/presets/all";
 import { ABookFC } from './components/ABookFC';
-import { IABookWebPartProps } from './components/IABookWebPartProps'
+import { IABookWebPartProps } from './components/IABookWebPartProps';
 
 export default class ABookWebPart extends BaseClientSideWebPart<IABookWebPartProps> {
 
