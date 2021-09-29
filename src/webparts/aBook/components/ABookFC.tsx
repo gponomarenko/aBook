@@ -266,19 +266,19 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
             </select>
             
             <TextField          
-              label="fullName"
+              label="Full Name"
               name="fullName" 
               value={fullNameQuery}
               onChange={onChangeValue} 
             />        
             <TextField 
-              label="jobTitle"
+              label="Job Title"
               name="jobTitle" 
               value={jobTitleQuery}
               onChange={onChangeValue} 
             />    
             <TextField 
-              label="managerOfEmployee" 
+              label="Manager" 
               name="managerOfEmployee"
               value={managerOfEmployeeQuery}
               onChange={onChangeValue}
@@ -293,12 +293,53 @@ export const ABookFC: React.FunctionComponent<IABookWebPartProps> = (props) => {
           <br />
           <div className={ styles.button__container }>
           <CSVLink 
-            data={filtered} 
+            data={filtered.map((item) => {
+                    const { 
+                      Department, 
+                      EMail,
+                      Id,
+                      MobilePhone,
+                      Office,                      
+                      WorkPhone  
+                    } = item.employeeCard;
+
+                    const employeeJobTitle = item.employeeCard.JobTitle;
+                    const employeeTitle = item.employeeCard.Title;
+
+                    let managerEmail: any;
+                    let managerId: any;
+                    let managerTitle: any;
+
+                    if (item.managerCard) {
+                      managerEmail = item.managerCard.EMail;
+                      managerId = item.managerCard.Id;
+                      managerTitle = item.managerCard.Title;
+                    }
+                    managerEmail = null;
+                    managerId = null;
+                    managerTitle = null;
+                    
+                  return {                   
+                    Department, 
+                    EMail,
+                    Id,
+                    MobilePhone,
+                    Office,                      
+                    WorkPhone,
+                    employeeJobTitle,
+                    employeeTitle,
+                    managerEmail,
+                    managerId,
+                    managerTitle,
+                    ...item,
+                  }
+                })
+              } 
             filename={'UserInformationReport.csv'} 
             className={ styles.button__container }
           >  
             <CommandBarButton 
-              className={styles.button} 
+              className={ styles.button } 
               iconProps={{ iconName: 'ExcelLogoInverse' }} 
               text='' 
             />  

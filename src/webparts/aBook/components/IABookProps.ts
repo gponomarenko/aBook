@@ -16,8 +16,7 @@ export interface IABookProps {
       Office: string;
       Title: string;
       WorkPhone: string;
-    };
-          
+    };          
     employeeCardId?: number;
     employeeCardStringId?: string;
     fullName?: string;
