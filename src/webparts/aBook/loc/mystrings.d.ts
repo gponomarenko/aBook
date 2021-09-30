@@ -8,3 +8,5 @@ declare module 'ABookWebPartStrings' {
   const strings: IABookWebPartStrings;
   export = strings;
 }
+
+declare module '*.scss';
